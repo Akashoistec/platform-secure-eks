@@ -1,0 +1,22 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: only-ecr-images-demo
+spec:
+  validationFailureAction: Enforce
+  background: false
+  rules:
+  - name: only-allow-ecr
+    match:
+      resources:
+        kinds:
+        - Pod
+        namespaces:
+        - demo-app
+    validate:
+      message: "Images must come from ECR (910321623036.dkr.ecr.ap-south-1.amazonaws.com)"
+      pattern:
+        spec:
+          containers:
+          - image: "910321623036.dkr.ecr.ap-south-1.amazonaws.com/*"
+

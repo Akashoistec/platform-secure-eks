@@ -1,0 +1,29 @@
+replicaCount: 1
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 256Mi
+  limits:
+    cpu: 300m
+    memory: 512Mi
+
+backgroundController:
+  enabled: false
+
+reportsController:
+  enabled: true
+  image:
+    registry: 910321623036.dkr.ecr.ap-south-1.amazonaws.com
+    repository: kyverno-reports-controller
+    tag: v1.12.3
+
+cleanupController:
+  enabled: true
+
+cleanupJobs:
+  image:
+    registry: 910321623036.dkr.ecr.ap-south-1.amazonaws.com
+    repository: kubectl
+    tag: 1.28.5
+

@@ -1,0 +1,19 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: psa-restricted-demo
+spec:
+  validationFailureAction: Enforce
+  background: true
+  rules:
+    - name: enforce-psa-restricted
+      match:
+        resources:
+          kinds:
+            - Pod
+          namespaces:
+            - demo-app
+      validate:
+        podSecurity:
+          level: "restricted"
+          version: "v1.29"

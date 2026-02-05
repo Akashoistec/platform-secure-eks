@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: evil-root
+  namespace: demo-app
+spec:
+  containers:
+  - name: evil
+    image: busybox
+    command: ["sh", "-c", "id && sleep 3600"]

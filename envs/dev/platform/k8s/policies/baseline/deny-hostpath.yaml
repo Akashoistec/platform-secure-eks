@@ -1,0 +1,40 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: baseline-deny-hostpath
+  annotations:
+    policies.kyverno.io/title: "Deny hostPath Volumes"
+    policies.kyverno.io/category: "Baseline"
+    policies.kyverno.io/severity: "high"
+    policies.kyverno.io/subject: "Pod,Volume"
+    policies.kyverno.io/description: >
+      Disallow the use of hostPath volumes in application workloads.
+spec:
+  validationFailureAction: Audit
+  background: true
+  rules:
+    - name: deny-hostpath
+      match:
+        any:
+          - resources:
+              kinds:
+                - Pod
+                - Deployment
+                - StatefulSet
+                - DaemonSet
+                - Job
+                - CronJob
+      exclude:
+        any:
+          - resources:
+              namespaces:
+                - kube-system
+                - kube-public
+                - kube-node-lease
+                - kyverno
+      validate:
+        message: "hostPath volumes are not allowed in application workloads."
+        pattern:
+          spec:
+            =(volumes):
+              - X(hostPath): "*"

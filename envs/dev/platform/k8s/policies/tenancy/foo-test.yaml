@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: foo-test
+  namespace: foo
+  labels:
+    app: test
+    owner: test
+    env: test
+spec:
+  containers:
+    - name: test
+      image: 910321623036.dkr.ecr.ap-south-1.amazonaws.com/nginx:latest
+      resources:
+        requests:
+          cpu: "50m"
+          memory: "64Mi"
+        limits:
+          cpu: "100m"
+          memory: "128Mi"

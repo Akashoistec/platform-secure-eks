@@ -1,0 +1,13 @@
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.*
+crash.log
+
+# Secrets
+*.pem
+*.key
+*.crt
+
+# Local overrides
+*.tfvars

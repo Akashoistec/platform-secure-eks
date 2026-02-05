@@ -1,0 +1,23 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: verify-secure-supply-chain
+spec:
+  validationFailureAction: Enforce
+  background: false
+  rules:
+    - name: require-signed-images
+      match:
+        resources:
+          kinds:
+            - Pod
+      verifyImages:
+        - imageReferences:
+            - "910321623036.dkr.ecr.ap-south-1.amazonaws.com/platform/secure-supply-chain-demo-app*"
+          attestors:
+            - entries:
+                - keyless:
+                    subjectRegExp: "https://github.com/Akashoistec/secure-supply-chain-demo-app/.*"
+                    issuer: "https://token.actions.githubusercontent.com"
+                    rekor:
+                      url: "https://rekor.sigstore.dev"

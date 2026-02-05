@@ -1,0 +1,25 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: psa-restricted-audit
+spec:
+  validationFailureAction: Audit
+  background: true
+  rules:
+    - name: psa-restricted
+      match:
+        resources:
+          kinds:
+            - Pod
+      exclude:
+        resources:
+          namespaces:
+            - kube-system
+            - kyverno
+            - kube-public
+            - kube-node-lease
+      validate:
+        podSecurity:
+          level: "restricted"
+          version: "v1.29"
+

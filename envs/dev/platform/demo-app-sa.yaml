@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: demo-app-sa
+  namespace: demo-app
+  annotations:
+    eks.amazonaws.com/role-arn: arn:aws:iam::910321623036:role/demo-app-role

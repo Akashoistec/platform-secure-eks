@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: evil-privileged
+  namespace: demo-app
+spec:
+  containers:
+  - name: evil
+    image: busybox
+    command: ["sh", "-c", "sleep 3600"]
+    securityContext:
+      privileged: true

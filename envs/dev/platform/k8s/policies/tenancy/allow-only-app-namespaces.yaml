@@ -1,0 +1,43 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: tenancy-allow-only-app-namespaces
+  annotations:
+    policies.kyverno.io/title: "Allow Workloads Only In Approved App Namespaces"
+    policies.kyverno.io/category: "Tenancy"
+    policies.kyverno.io/severity: "high"
+    policies.kyverno.io/subject: "Workload"
+    policies.kyverno.io/description: >
+      Only allow workloads to be created in explicitly approved application namespaces.
+spec:
+  validationFailureAction: Enforce
+  background: true
+  rules:
+    - name: allow-only-approved-namespaces
+      match:
+        any:
+          - resources:
+              kinds:
+                - Pod
+                - Deployment
+                - StatefulSet
+                - DaemonSet
+                - Job
+                - CronJob
+      exclude:
+        any:
+          - resources:
+              namespaces:
+                - kube-system
+                - kube-public
+                - kube-node-lease
+                - kyverno
+      validate:
+        message: "Workloads may only be deployed into approved application namespaces."
+        deny:
+          conditions:
+            all:
+              - key: "{{ request.namespace }}"
+                operator: AnyNotIn
+                value:
+                  - demo-app

@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: demo-web
+  namespace: demo-app
+  labels:
+    app: demo-web
+    owner: platform
+    env: dev
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: demo-web
+  template:
+    metadata:
+      labels:
+        app: demo-web
+        owner: platform
+        env: dev
+    spec:
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+      - name: web
+        image: 910321623036.dkr.ecr.ap-south-1.amazonaws.com/platform/secure-supply-chain-demo-app@sha256:b2f31543b57a508ac31578a222ece44c23df430f92cebb1418a466250c0220b4
+        ports:
+        - containerPort: 8080
+        securityContext:
+          allowPrivilegeEscalation: false
+          runAsNonRoot: true
+          capabilities:
+            drop: ["ALL"]
+        resources:
+          requests:
+            cpu: "50m"
+            memory: "64Mi"
+          limits:
+            cpu: "200m"
+            memory: "128Mi"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: web-svc
+  namespace: demo-app
+  labels:
+    app: demo-web
+    owner: platform
+    env: dev
+spec:
+  selector:
+    app: demo-web
+  ports:
+  - port: 80
+    targetPort: 8080

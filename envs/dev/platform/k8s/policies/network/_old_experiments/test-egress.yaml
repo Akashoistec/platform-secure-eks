@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: egress-test
+  namespace: demo-app
+spec:
+  containers:
+    - name: app
+      image: 910321623036.dkr.ecr.ap-south-1.amazonaws.com/platform/secure-supply-chain-demo-app@sha256:e5a839c59a8e79f4260537f3e89951ef260021f1c6195c794fd84dcdacd598bc
+      command: ["sleep", "3600"]
+      securityContext:
+        allowPrivilegeEscalation: false
+        capabilities:
+          drop:
+            - ALL
+        runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault

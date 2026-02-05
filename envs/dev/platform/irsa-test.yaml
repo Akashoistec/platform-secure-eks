@@ -1,0 +1,36 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: irsa-test
+  namespace: demo-app
+  labels:
+    app: irsa-test
+    owner: akash
+    env: dev
+spec:
+  serviceAccountName: demo-app-sa
+  containers:
+  - name: awscli
+    image: 910321623036.dkr.ecr.ap-south-1.amazonaws.com/platform/awscli:2.15.57
+    command: ["sleep", "3600"]
+    env:
+    - name: HOME
+      value: /tmp
+    resources:
+      requests:
+        cpu: "100m"
+        memory: "128Mi"
+      limits:
+        cpu: "200m"
+        memory: "256Mi"
+    securityContext:
+      allowPrivilegeEscalation: false
+      runAsNonRoot: true
+      runAsUser: 1000
+      runAsGroup: 3000
+      capabilities:
+        drop:
+          - ALL
+      seccompProfile:
+        type: RuntimeDefault
+
