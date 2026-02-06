@@ -1,10 +1,41 @@
-# Platform Governance — Secure EKS Baseline
+# # Cloud-Native Kubernetes Platform Governance (AWS EKS)
 
-This repository defines a **governed Kubernetes platform** on Amazon EKS.
+This repository defines a **governed Kubernetes platform on AWS**, built on Amazon EKS.
 
 The platform applies controls at admission, separates identity across runtime, CI, and human access, and keeps sensitive actions auditable.
 
-It represents a **reference platform baseline**.
+It represents a **reference platform baseline**, not a demo environment.
+
+---
+
+## Platform Architecture
+
+![Platform governance architecture](docs/architecture/platform-governance-architecture.png)
+
+This platform is designed as an **AWS-native governance baseline** for Kubernetes workloads.
+
+It enforces control boundaries at four layers:
+- **Cloud identity (AWS IAM)**
+- **Cluster admission (Kyverno + PSA)**
+- **Workload identity (IRSA)**
+- **Infrastructure lifecycle (Terraform + OIDC)**
+
+The diagram highlights how identities, policies, and infrastructure are deliberately separated to prevent privilege bleed across layers.
+
+---
+
+## AWS Control Plane Integration
+
+This platform relies on AWS-native primitives rather than custom control planes.
+
+- **IAM** defines trust boundaries between humans, CI systems, and workloads
+- **EKS** provides the managed control plane while governance is enforced at admission
+- **ECR** acts as the only trusted image source
+- **CloudTrail** records all sensitive identity transitions
+- **CloudWatch** raises alerts for break-glass activity
+
+No static credentials are stored in the cluster or CI system.  
+All access is identity-based and time-bound.
 
 ---
 
@@ -32,7 +63,7 @@ Controls are applied **before scheduling**.
 
 **Release Hygiene**
 - CPU and memory requests and limits are required
-- Standard labels (`app`, `env`, `owner`) are expected on workloads
+- Standard labels (`app`, `env`, `owner`) are required on workloads
 
 The result is a small, well-defined workload shape that the platform accepts.
 
@@ -51,14 +82,12 @@ Observed behavior:
 
 Test manifests:
 
-
 Evidence:
 - [Deny default namespace](docs/screenshots/k8s/01-k8s-deny-default-ns-deny.png)
 - [Deny non-ECR image](docs/screenshots/k8s/02-k8s-deny-non-ecr-image-deny.png)
 - [Deny mutable image tags](docs/screenshots/k8s/03-k8s-deny-latest-tag-deny.png)
 - [Require resource limits](docs/screenshots/k8s/04-k8s-require-resources-deny.png)
 - [Allow compliant workload](docs/screenshots/k8s/05-k8s-allow-compliant-workload-allow.png)
-
 
 ---
 
@@ -84,7 +113,7 @@ CI workflows authenticate to AWS using **GitHub Actions OIDC**.
 
 - No static AWS credentials are stored in the repository
 - Each workflow assumes a dedicated IAM role
-- CI identity is separate from workload and human access
+- CI identity is isolated from workload and human access
 
 Terraform plans for the platform run using this identity.
 
@@ -100,7 +129,7 @@ Evidence:
 A dedicated break-glass role exists for recovery scenarios.
 
 - The role is not used during normal operation
-- Assumption is a manual action
+- Assumption is a manual, audited action
 - Usage is visible through CloudTrail events
 
 CloudTrail logs are retained in an encrypted S3 bucket, and alerts are generated when the break-glass role is assumed.
@@ -122,12 +151,29 @@ The platform includes:
 - IAM roles for platform operations, CI/CD, workloads (IRSA), and break-glass access
 - Kyverno installed as a cluster add-on
 
-Terraform code lives under:
+Infrastructure code is organized under:
+
+---
+
+## Terraform State and Trust Boundaries
+
+Terraform state is intentionally **partitioned by responsibility**.
+
+- **Network state** is isolated from platform state
+- **Platform state** does not include application workloads
+- CI pipelines assume scoped IAM roles using OIDC to access state
+
+This separation ensures:
+- Network changes cannot be made by application pipelines
+- Platform operators cannot modify workload identities by default
+- Break-glass access does not overlap with CI or runtime roles
+
+State is stored remotely and protected using AWS-native controls.
 
 ---
 
 ## Status
 
-- Platform validated against a live cluster
+- Platform validated against a live AWS EKS cluster
 - Evidence captured during validation
 - Cluster destroyed after validation
