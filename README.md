@@ -53,11 +53,12 @@ Test manifests:
 
 
 Evidence:
-- docs/screenshots/k8s/01-k8s-deny-default-ns-deny.png
-- docs/screenshots/k8s/02-k8s-deny-non-ecr-image-deny.png
-- docs/screenshots/k8s/03-k8s-deny-latest-tag-deny.png
-- docs/screenshots/k8s/04-k8s-require-resources-deny.png
-- docs/screenshots/k8s/05-k8s-allow-compliant-workload-allow.png
+- [Deny default namespace](docs/screenshots/k8s/01-k8s-deny-default-ns-deny.png)
+- [Deny non-ECR image](docs/screenshots/k8s/02-k8s-deny-non-ecr-image-deny.png)
+- [Deny mutable image tags](docs/screenshots/k8s/03-k8s-deny-latest-tag-deny.png)
+- [Require resource limits](docs/screenshots/k8s/04-k8s-require-resources-deny.png)
+- [Allow compliant workload](docs/screenshots/k8s/05-k8s-allow-compliant-workload-allow.png)
+
 
 ---
 
@@ -72,8 +73,8 @@ Application workloads use **IRSA** for AWS access.
 Actions outside the role scope return `AccessDenied`, which was verified during testing.
 
 Evidence:
-- docs/screenshots/aws/06-aws-irsa-identity-success.png
-- docs/screenshots/aws/07-aws-irsa-access-denied.png
+- [IRSA identity assumed](docs/screenshots/aws/06-aws-irsa-identity-success.png)
+- [IRSA access denied outside scope](docs/screenshots/aws/07-aws-irsa-access-denied.png)
 
 ---
 
@@ -88,9 +89,9 @@ CI workflows authenticate to AWS using **GitHub Actions OIDC**.
 Terraform plans for the platform run using this identity.
 
 Evidence:
-- docs/screenshots/gha/08-gha-no-static-aws-keys.png
-- docs/screenshots/gha/09-gha-oidc-role-assume.png
-- docs/screenshots/gha/10-gha-aws-identity.png
+- [No static AWS credentials in CI](docs/screenshots/gha/08-gha-no-static-aws-keys.png)
+- [OIDC role assumed by workflow](docs/screenshots/gha/09-gha-oidc-role-assume.png)
+- [AWS identity in CI job](docs/screenshots/gha/10-gha-aws-identity.png)
 
 ---
 
@@ -105,11 +106,11 @@ A dedicated break-glass role exists for recovery scenarios.
 CloudTrail logs are retained in an encrypted S3 bucket, and alerts are generated when the break-glass role is assumed.
 
 Evidence:
-- docs/screenshots/aws/11-breakglass-role-exists.png
-- docs/screenshots/aws/12-breakglass-not-default.png
-- docs/screenshots/aws/13-breakglass-assumed.png
-- docs/screenshots/aws/14-breakglass-privileged-action.png
-- docs/screenshots/aws/15-cloudtrail-breakglass-assumerole.png
+- [Break-glass role exists](docs/screenshots/aws/11-breakglass-role-exists.png)
+- [Not part of default access paths](docs/screenshots/aws/12-breakglass-not-default.png)
+- [Break-glass role assumed](docs/screenshots/aws/13-breakglass-assumed.png)
+- [Privileged action performed](docs/screenshots/aws/14-breakglass-privileged-action.png)
+- [CloudTrail event recorded](docs/screenshots/aws/15-cloudtrail-breakglass-assumerole.png)
 
 ---
 
