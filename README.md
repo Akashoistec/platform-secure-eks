@@ -12,6 +12,8 @@ It represents a **reference platform baseline**, not a demo environment.
 
 ![Platform governance architecture](docs/architecture/platform-governance-architecture.png)
 
+<br/>
+
 This platform is designed as an **AWS-native governance baseline** for Kubernetes workloads.
 
 It enforces control boundaries at four layers:
