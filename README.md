@@ -9,7 +9,8 @@ It represents a **reference platform baseline**, not a demo environment.
 ---
 
 ## Platform Architecture
-
+<img width="1536" height="1024" alt="ChatGPT Image Feb 7, 2026, 04_34_09 PM" src="https://github.com/user-attachments/assets/e52c7a24-442b-4ece-856e-65e0fd410666" />
+#
 ![Platform governance architecture](docs/architecture/platform-governance-architecture.png)
 
 ##
